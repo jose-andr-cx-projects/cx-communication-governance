@@ -1,0 +1,55 @@
+schema_version: "0.1"
+communication_id: request-additional-information
+status: prototype
+version: "0.1"
+
+intent:
+  purpose: Request information required for a customer request or application to progress.
+  customer_outcome: >
+    The customer understands what information is required, why it is required,
+    what they need to do next, how to respond and where to get help if needed.
+
+required_components:
+  information_required:
+    requirement: required
+    description: Clearly identify the information, evidence or documents required.
+
+  reason_required:
+    requirement: required
+    description: Explain why the information is required where this is not self-evident.
+
+  customer_action:
+    requirement: required
+    description: Explain what the customer needs to do.
+
+  response_method:
+    requirement: required
+    description: Explain how the customer should provide the requested information.
+
+  timeframe:
+    requirement: conditional
+    description: Include a due date or timeframe when one applies.
+
+  support_pathway:
+    requirement: conditional
+    description: Explain where the customer can get help when appropriate.
+
+quality_rule_sets:
+  - customer-communication-quality
+
+allowed_variation:
+  - service-specific evidence requirements
+  - service-specific legal or policy wording when validated
+  - service-specific response channels
+  - service-specific timeframes
+
+governance:
+  human_validation_required: true
+  business_owner_validation_required: true
+  ai_may_assess: true
+  ai_may_propose_change: true
+  ai_may_approve_change: false
+
+notes:
+  - Prototype communication definition for the first architecture test.
+  - This is not yet an approved organisational business rule.
