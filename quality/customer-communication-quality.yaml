@@ -1,0 +1,46 @@
+schema_version: "0.1"
+rule_set_id: customer-communication-quality
+status: prototype
+version: "0.1"
+
+purpose: >
+  Define reusable CX quality rules that may apply across multiple
+  customer communication intents and operational implementations.
+
+rules:
+  clear_purpose:
+    requirement: required
+    description: The communication should make its purpose understandable to the customer.
+
+  clear_action:
+    requirement: conditional
+    description: Where customer action is required, the required action should be explicit.
+
+  plain_language:
+    requirement: required
+    description: Use language customers can reasonably understand without internal knowledge.
+
+  customer_terminology:
+    requirement: required
+    description: Prefer customer-facing terminology over internal system, process or team language.
+
+  accessible_structure:
+    requirement: required
+    description: Structure information so key purpose, action and support information can be identified easily.
+
+  support_pathway:
+    requirement: conditional
+    description: Provide an appropriate support pathway where the customer may reasonably need assistance.
+
+  reference_context:
+    requirement: conditional
+    description: Include enough reference context for the customer to understand which request, application or service the communication relates to.
+
+governance:
+  human_approval_required_for_rule_changes: true
+  ai_may_propose_changes: true
+  ai_may_approve_changes: false
+
+notes:
+  - These are prototype CX rules for architecture testing.
+  - They are not approved organisational policy.
