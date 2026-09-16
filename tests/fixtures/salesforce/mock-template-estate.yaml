@@ -1,0 +1,119 @@
+fixture_set: mock-salesforce-template-estate
+status: synthetic
+version: "0.1"
+
+warning: >
+  These records are synthetic test fixtures informed by communication patterns
+  observed during discovery. They are not authoritative Salesforce EmailTemplate records.
+
+templates:
+  - id: SF-MOCK-001
+    service: Filming
+    subject: "Filming Application - Further Information Required"
+    body: >
+      We need some more information before we can continue assessing your filming application.
+      Please send the requested documents by replying to this email.
+
+  - id: SF-MOCK-002
+    service: Filming
+    subject: "Filming Application - Additional Information Needed"
+    body: >
+      Additional information is required to progress your application.
+      Please provide the documents requested by the assessing officer.
+
+  - id: SF-MOCK-003
+    service: Parking
+    subject: "Parking permit application - more information required"
+    body: >
+      We need further evidence to assess your parking permit application.
+      Upload the requested information through your application.
+
+  - id: SF-MOCK-004
+    service: Business permits
+    subject: "Business permit - additional documents required"
+    body: >
+      Your application cannot progress until additional documents are supplied.
+      Please provide the documents listed below within 10 business days.
+      Contact the service team if you need assistance.
+
+  - id: SF-MOCK-005
+    service: Filming
+    subject: "Filming Permit Approval"
+    body: >
+      Your filming permit application has been approved.
+      Your permit is attached.
+
+  - id: SF-MOCK-006
+    service: Outdoor Dining
+    subject: "Outdoor Dining Permit Approval"
+    body: >
+      Your outdoor dining permit has been approved.
+      Review the permit conditions before operating.
+
+  - id: SF-MOCK-007
+    service: Space Occupation
+    subject: "Application Approved, Pending Payment"
+    body: >
+      Your application has been approved, subject to payment.
+      Please use the payment link below to complete payment.
+
+  - id: SF-MOCK-008
+    service: Out of Hours
+    subject: "Application Approved, Pending Payment"
+    body: >
+      We have approved your application.
+      Payment must be received before your approval can take effect.
+
+  - id: SF-MOCK-009
+    service: Outdoor Dining
+    subject: "Your new Outdoor Dining permit"
+    body: >
+      Your new permit is ready.
+      Please keep a copy for your records.
+
+  - id: SF-MOCK-010
+    service: Outdoor Dining - Parklet
+    subject: "Your new Outdoor Dining Parklet permit"
+    body: >
+      Your parklet permit is ready.
+      Please review the permit conditions.
+
+  - id: SF-MOCK-011
+    service: General customer contact
+    subject: "URGENT: Your action required to resolve this customer contact"
+    body: >
+      Action is required to progress this matter.
+      Please respond as soon as possible.
+
+  - id: SF-MOCK-012
+    service: Business Concierge
+    subject: "City of Melbourne Business Concierge Support"
+    body: >
+      We are contacting you to provide information and support following your enquiry.
+
+  - id: SF-MOCK-013
+    service: Business Concierge
+    subject: "City of Melbourne Business Concierge Support - Follow up"
+    body: >
+      We are following up on the support information previously provided.
+
+  - id: SF-MOCK-014
+    service: Parking
+    subject: "Parking permit - notice of cancellation"
+    body: >
+      Your parking permit has been cancelled.
+      Contact us if you believe this decision is incorrect.
+
+  - id: SF-MOCK-015
+    service: Permit services
+    subject: "Urgent Action Required - Permit has expired"
+    body: >
+      Your permit has expired.
+      You may need to submit a new application before continuing the activity.
+
+  - id: SF-MOCK-016
+    service: Filming
+    subject: "Filming permit referral"
+    body: >
+      Your filming application has been referred for further assessment.
+      We will contact you when that assessment is complete.
