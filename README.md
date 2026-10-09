@@ -4,7 +4,7 @@
 
 Create a governed, reusable source of CX communication knowledge that can be used across operational systems, human guidance, AI-assisted assessment and change workflows.
 
-The repository is intended to support a model where CX business rules are defined once and reused across multiple communication implementations.
+The repository supports a model where CX business rules are defined once and reused across multiple communication implementations.
 
 ## Core principle
 
@@ -14,42 +14,87 @@ Operational systems such as Salesforce remain responsible for deployed communica
 
 This repository governs reusable CX communication knowledge rather than rendered operational templates.
 
-## Initial proof of concept
+## Current status
 
-The first proof of concept uses a synthetic Salesforce email-template estate to test whether the same governed knowledge can support:
+**Prototype — core feasibility demonstrated under controlled synthetic conditions.**
 
-1. assessment;
-2. quality checks;
-3. change-request generation;
+The first architecture test has demonstrated that one governed communication definition can support:
+
+1. communication assessment;
+2. quality checking;
+3. Jira-ready change-request generation;
 4. drift detection; and
 5. reuse suggestions.
 
-The proof uses real Bitbucket, Confluence, Jira and Penpal workflows where available.
+A dedicated **CX Communication Governance Agent** was used for the test after existing PenPal and CoMpanion agents proved too constrained for this governance use case.
 
-Salesforce integration is deliberately excluded from the first test.
+The test used a synthetic Salesforce template estate informed by communication patterns observed during discovery. Synthetic fixtures are not authoritative Salesforce EmailTemplate records.
+
+A Bitbucket Pipeline also successfully created both a Jira work item and a Confluence page from the governed repository while carrying Bitbucket build and commit traceability.
+
+See:
+
+- `tests/results/communication-governance-capability-test-01.md`
+- `tests/results/atlassian-creation-proof-01.md`
+
+## Current architecture hypothesis
+
+```text
+Salesforce operational templates
+        ↓
+Bitbucket governed CX communication knowledge
+        ↓
+CX Communication Governance Agent
+        ↓
+Human review
+        ├── Confluence — human-readable governance view
+        └── Jira — governed change workflow
+        ↓
+Approved operational implementation
+```
+
+This remains a prototype operating model, not an approved organisational architecture.
+
+## Next operational step
+
+The main gap between the synthetic proof and a real pilot is controlled, repeatable, read-only access to Salesforce `EmailTemplate`.
+
+Once that access exists, the same assessment pattern can run against the actual template estate rather than synthetic fixtures.
+
+A reported estate of 40+ graffiti communications is a candidate real-world pilot. The count and scope require validation before use.
 
 ## Repository structure
 
-    communications/
-      Governed communication intents and reusable communication definitions.
+```text
+communications/
+  Governed communication intents and reusable communication definitions.
 
-    quality/
-      Cross-cutting CX communication quality rules.
+quality/
+  Cross-cutting CX communication quality rules.
 
-    implementations/
-      Mappings between governed communication definitions and operational implementations.
+implementations/
+  Mappings between governed communication definitions and operational implementations.
 
-    agents/
-      Agent instructions for using governed knowledge safely.
+agents/
+  Agent contracts for using governed knowledge safely.
 
-    tests/
-      Synthetic fixtures and proof-of-concept scenarios.
+tests/
+  Synthetic fixtures, controlled scenarios and recorded proof results.
+```
 
 ## Source-of-truth model
 
 ### Bitbucket
 
-Authoritative source for governed CX communication definitions, reusable rules and implementation mappings.
+Organisational repository and intended authoritative source for governed CX communication definitions, reusable rules, implementation mappings and automation.
+
+### GitHub
+
+Controlled working mirror/proxy used where external AI tooling cannot access the enterprise Bitbucket environment.
+
+Changes made here for assisted repository maintenance should be treated as equivalent working changes for the Bitbucket repository and kept aligned with the organisational source.
+
+Do not place credentials, raw organisational data, customer information or controlled source material in this public mirror.
 
 ### Salesforce and other operational platforms
 
@@ -59,19 +104,19 @@ Authoritative source for deployed operational implementations.
 
 Human-readable governance and review surface.
 
-Confluence should expose governed knowledge rather than become an independent source of truth.
+Confluence should expose governed knowledge rather than become an independently maintained rule source.
 
 ### Jira
 
 Change workflow and implementation tracking.
 
-### Penpal
+### CX Communication Governance Agent
 
 AI-assisted reasoning layer.
 
-Penpal may assess, compare, identify gaps, suggest reuse and generate proposed change requests.
+The agent may assess, compare, identify gaps, suggest reuse, detect drift and generate proposed change requests.
 
-Penpal does not approve governance changes or operational implementation changes.
+It does not approve governance or operational implementation changes.
 
 ## Governance boundary
 
@@ -80,11 +125,8 @@ Human approval is required for:
 - creation or approval of governed CX rules;
 - consolidation or retirement of communication patterns;
 - business-policy decisions;
+- Jira change requests;
 - operational implementation changes; and
 - changes that create stakeholder or customer commitments.
 
 AI output is evidence and decision support, not approval.
-
-## Status
-
-**Prototype — intended to evolve into the production governance repository if the operating model proves useful.**
