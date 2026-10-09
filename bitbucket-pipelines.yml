@@ -1,0 +1,254 @@
+image: python:3.12-slim
+
+pipelines:
+  custom:
+    prove-atlassian-creation:
+      - step:
+          name: Prove Jira and Confluence creation
+          script:
+            - |
+              python3 <<'PY'
+              import os
+              import json
+              import base64
+              import urllib.request
+              import urllib.parse
+              import urllib.error
+
+              site = os.environ["ATLASSIAN_SITE"].rstrip("/")
+              email = os.environ["ATLASSIAN_EMAIL"]
+              token = os.environ["ATLASSIAN_API_TOKEN"]
+              jira_project = os.environ["JIRA_PROJECT_KEY"]
+              confluence_space_key = os.environ["CONFLUENCE_SPACE_KEY"]
+
+              build_number = os.environ.get("BITBUCKET_BUILD_NUMBER", "manual")
+              commit = os.environ.get("BITBUCKET_COMMIT", "unknown")
+
+              auth = base64.b64encode(
+                  f"{email}:{token}".encode("utf-8")
+              ).decode("utf-8")
+
+              headers = {
+                  "Authorization": f"Basic {auth}",
+                  "Accept": "application/json",
+                  "Content-Type": "application/json",
+              }
+
+              def request(method, url, payload=None):
+                  data = None
+                  if payload is not None:
+                      data = json.dumps(payload).encode("utf-8")
+
+                  req = urllib.request.Request(
+                      url,
+                      data=data,
+                      headers=headers,
+                      method=method,
+                  )
+
+                  try:
+                      with urllib.request.urlopen(req) as response:
+                          body = response.read().decode("utf-8")
+                          return json.loads(body) if body else {}
+                  except urllib.error.HTTPError as error:
+                      body = error.read().decode("utf-8")
+                      print(f"API ERROR {error.code}")
+                      print(f"URL: {url}")
+                      print(body)
+                      raise
+
+              print("CX Communication Governance — Atlassian creation proof")
+              print(f"Build: {build_number}")
+              print(f"Commit: {commit}")
+
+              issue_types_url = (
+                  f"{site}/rest/api/3/issue/createmeta/"
+                  f"{urllib.parse.quote(jira_project)}/issuetypes"
+              )
+
+              issue_types = request("GET", issue_types_url).get("issueTypes", [])
+              if not issue_types:
+                  raise RuntimeError(
+                      f"No Jira issue types available for project {jira_project}"
+                  )
+
+              def first_named(name):
+                  return next(
+                      (
+                          issue_type
+                          for issue_type in issue_types
+                          if issue_type.get("name", "").lower() == name.lower()
+                          and not issue_type.get("subtask", False)
+                      ),
+                      None,
+                  )
+
+              preferred = first_named("Task") or first_named("Story")
+
+              if preferred is None:
+                  preferred = next(
+                      (
+                          issue_type
+                          for issue_type in issue_types
+                          if not issue_type.get("subtask", False)
+                          and issue_type.get("name", "").lower() != "epic"
+                      ),
+                      None,
+                  )
+
+              if preferred is None:
+                  preferred = first_named("Epic")
+
+              if preferred is None:
+                  raise RuntimeError("No usable non-subtask Jira issue type available.")
+
+              issue_type_id = preferred["id"]
+              print(
+                  f"Using Jira issue type: "
+                  f"{preferred['name']} ({issue_type_id})"
+              )
+
+              jira_summary = (
+                  f"[POC — Synthetic] Bitbucket governance creation proof "
+                  f"#{build_number}"
+              )
+
+              jira_description_text = (
+                  "Purpose\n"
+                  "Prove that the CX Communication Governance Bitbucket repository "
+                  "can initiate a Jira work item through a controlled pipeline.\n\n"
+                  "Governed source\n"
+                  "Communication ID: request-additional-information\n"
+                  "Definition: communications/request-additional-information.yaml\n"
+                  "Quality rules: quality/customer-communication-quality.yaml\n\n"
+                  "Test status\n"
+                  "Synthetic proof of concept only. No production Salesforce change "
+                  "is authorised by this issue.\n\n"
+                  f"Bitbucket build: {build_number}\n"
+                  f"Bitbucket commit: {commit}\n\n"
+                  "Human decision boundary\n"
+                  "Human approval remains required for governed rule changes, "
+                  "operational template changes and implementation decisions."
+              )
+
+              jira_payload = {
+                  "fields": {
+                      "project": {"key": jira_project},
+                      "issuetype": {"id": issue_type_id},
+                      "summary": jira_summary,
+                      "description": {
+                          "type": "doc",
+                          "version": 1,
+                          "content": [
+                              {
+                                  "type": "paragraph",
+                                  "content": [
+                                      {
+                                          "type": "text",
+                                          "text": jira_description_text,
+                                      }
+                                  ],
+                              }
+                          ],
+                      },
+                  }
+              }
+
+              jira_result = request(
+                  "POST",
+                  f"{site}/rest/api/3/issue",
+                  jira_payload,
+              )
+
+              jira_key = jira_result["key"]
+              print(f"Jira issue created: {jira_key}")
+
+              query = urllib.parse.urlencode({
+                  "keys": confluence_space_key,
+                  "limit": 1,
+              })
+
+              spaces_result = request(
+                  "GET",
+                  f"{site}/wiki/api/v2/spaces?{query}",
+              )
+
+              spaces = spaces_result.get("results", [])
+              if not spaces:
+                  raise RuntimeError(
+                      f"Confluence space not found: {confluence_space_key}"
+                  )
+
+              space_id = spaces[0]["id"]
+              print(
+                  f"Confluence space resolved: "
+                  f"{confluence_space_key} ({space_id})"
+              )
+
+              page_title = (
+                  f"[POC — Synthetic] Bitbucket Governance Creation Proof "
+                  f"#{build_number}"
+              )
+
+              page_body = f"""
+              <h1>Bitbucket → Atlassian Creation Proof</h1>
+              <p>
+              This page was created programmatically by the
+              <strong>cx-communication-governance</strong>
+              Bitbucket pipeline.
+              </p>
+              <h2>Purpose</h2>
+              <p>
+              Demonstrate that governed work originating in Bitbucket can create
+              downstream human and operational artefacts without manually
+              recreating the source governance context.
+              </p>
+              <h2>Governed source</h2>
+              <ul>
+                <li>Communication ID: <code>request-additional-information</code></li>
+                <li>Definition: <code>communications/request-additional-information.yaml</code></li>
+                <li>Quality rules: <code>quality/customer-communication-quality.yaml</code></li>
+              </ul>
+              <h2>Created Jira work item</h2>
+              <p>Jira issue: <strong>{jira_key}</strong></p>
+              <h2>Pipeline traceability</h2>
+              <ul>
+                <li>Bitbucket build: {build_number}</li>
+                <li>Bitbucket commit: <code>{commit}</code></li>
+              </ul>
+              <h2>Human decision boundary</h2>
+              <p>
+              This proof does not approve a governed rule, operational template,
+              Salesforce change or production implementation.
+              Human review remains required.
+              </p>
+              <p><strong>Test data only — synthetic proof of concept.</strong></p>
+              """
+
+              confluence_payload = {
+                  "spaceId": str(space_id),
+                  "status": "current",
+                  "title": page_title,
+                  "body": {
+                      "representation": "storage",
+                      "value": page_body,
+                  },
+              }
+
+              page_result = request(
+                  "POST",
+                  f"{site}/wiki/api/v2/pages",
+                  confluence_payload,
+              )
+
+              page_id = page_result["id"]
+              print(f"Confluence page created: {page_id}")
+
+              print("------------------------------------------")
+              print("POC SUCCESS")
+              print("------------------------------------------")
+              print(f"Jira issue: {jira_key}")
+              print(f"Confluence page ID: {page_id}")
+              print(f"Bitbucket build: {build_number}")
+              print("------------------------------------------")
+              PY
