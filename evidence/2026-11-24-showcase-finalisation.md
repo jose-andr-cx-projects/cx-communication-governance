@@ -1,9 +1,9 @@
 # Showcase finalisation — 24 November 2026
 
-Status: presenter-approved HTML v12; prepared for 25 November branch showcase. This is a presentation record, not production approval.
+Status: presenter-approved HTML v14; prepared for 25 November branch showcase. This is a presentation record, not production approval.
 
 ## Deliverable
-`curiosity_killed_the_cat_showcase_v12.html` — interactive presentation, Curiosity killed the cat. Finalised with presenter-led answer reveals, compact cards without scrolling as a design requirement, discreet cat illustrations, speaker notes and architecture diagrams. The HTML remains a separate presentation artefact; this record does not assert it has been uploaded here.
+`curiosity_killed_the_cat_showcase_v14.html` — interactive presentation, Curiosity killed the cat. Finalised with presenter-led answer reveals, compact cards without scrolling as a design requirement, discreet cat illustrations, speaker notes and architecture diagrams. The HTML remains a separate presentation artefact; this record does not assert it has been uploaded here.
 
 ## Story and evidence
 - Challenge: scaling communication improvements beyond individual templates.
@@ -20,3 +20,9 @@ See repository README and `tests/results/communication-governance-capability-tes
 
 ## Boundary
 Prototype feasibility only; human oversight and approval remain necessary. No production rollout, approved architecture, or automated synchronisation is implied. No customer data, internal links, screenshots or presentation imagery copied into this public reference.
+
+## Final presenter revisions — 25 November 2026
+- Added a Git explanation to the Bitbucket card via an information tooltip.
+- Corrected slide 5 source reference and speaker notes: recovered synthetic fixture set contains 16 records, nine candidate intents and four matching implementations; identical inputs across both agent tests have not been independently verified.
+- Corrected the slide 7 timeline and speaker notes to place the Salesforce-to-Databricks pivot before lunch. Timing remains presenter-reported.
+- Presenter approved v14. Presentation HTML remains separate; no production or test evidence was changed by these editorial revisions.
